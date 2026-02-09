@@ -1,0 +1,4 @@
+interface:
+  display_name: "Novita Docs"
+  short_description: "Reference Novita APIs, sandbox, GPUs, and integrations"
+  default_prompt: "Use $novita-docs to answer a Novita platform question with concise steps and runnable examples; for dynamic data, verify live and include Verified on: YYYY-MM-DD."
