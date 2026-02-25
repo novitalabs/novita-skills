@@ -29,12 +29,12 @@ Follow this workflow:
 
 | Question | Read This | Live Docs |
 |----------|-----------|-----------|
-| Getting started | [quick-start.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/quick-start.md) | - |
-| LLM API usage | [llm-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/llm-guide.md) | [API Ref](https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion) |
-| Agent Sandbox | [sandbox-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/sandbox-guide.md) | [Docs](https://novita.ai/docs/guides/sandbox-overview) |
-| GPU instances | [gpu-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/gpu-guide.md) | [Docs](https://novita.ai/docs/guides/gpu-instance-overview) |
-| Tool integrations | [integrations.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/integrations.md) | - |
-| Common issues | [common-issues.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/common-issues.md) | [FAQ](https://novita.ai/docs/guides/faq) |
+| Getting started | [quick-start.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/quick-start.md) | - |
+| LLM API usage | [llm-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/llm-guide.md) | [API Ref](https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion) |
+| Agent Sandbox | [sandbox-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/sandbox-guide.md) | [Docs](https://novita.ai/docs/guides/sandbox-overview) |
+| GPU instances | [gpu-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/gpu-guide.md) | [Docs](https://novita.ai/docs/guides/gpu-instance-overview) |
+| Tool integrations | [integrations.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/integrations.md) | - |
+| Common issues | [common-issues.md](https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-docs/references/common-issues.md) | [FAQ](https://novita.ai/docs/guides/faq) |
 
 ## Reference Selection Rules
 
