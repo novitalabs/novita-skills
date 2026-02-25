@@ -1,15 +1,15 @@
 ---
 name: novita-docs
 description: |
-  Novita AI platform reference for API, infrastructure, and integration tasks. Use when users ask about Novita LLM API usage (OpenAI-compatible endpoint), model selection, Agent Sandbox code execution, GPU Instance or Serverless GPU deployment, framework/tool integrations, authentication, billing, pricing, quota/rate limits, or troubleshooting. Prefer this skill for "How do I use Novita with X?" and "Why is my Novita request failing?" questions.
+  Novita AI platform reference for LLM API (OpenAI-compatible), Agent Sandbox, GPU (Instance/Serverless), integrations, auth/billing/pricing/rate limits, and troubleshooting. Use for "How do I use Novita with X?" and Novita request failures.
 ---
 
 # Novita AI Platform Reference
 
 Follow this workflow:
 1. Identify the user's product area (LLM, Sandbox, GPU, integration, troubleshooting).
-2. Open only the minimum reference file from the map below.
-3. For prices, model availability, and status, fetch live data before answering.
+2. Fetch only the minimum reference file from the map below using WebFetch or equivalent HTTP read tool.
+3. Treat prices, model availability, and status as dynamic; fetch live data before answering.
 4. Return copy-pasteable commands or code snippets whenever possible.
 5. If requested details are not covered in local references, provide the closest verified guidance, state the gap explicitly, and point to the official live docs.
 
@@ -29,27 +29,27 @@ Follow this workflow:
 
 | Question | Read This | Live Docs |
 |----------|-----------|-----------|
-| Getting started | [quick-start.md](references/quick-start.md) | - |
-| LLM API usage | [llm-guide.md](references/llm-guide.md) | [API Ref](https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion) |
-| Agent Sandbox | [sandbox-guide.md](references/sandbox-guide.md) | [Docs](https://novita.ai/docs/guides/sandbox-overview) |
-| GPU instances | [gpu-guide.md](references/gpu-guide.md) | [Docs](https://novita.ai/docs/guides/gpu-instance-overview) |
-| Tool integrations | [integrations.md](references/integrations.md) | - |
-| Common issues | [common-issues.md](references/common-issues.md) | [FAQ](https://novita.ai/docs/guides/faq) |
+| Getting started | [quick-start.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/quick-start.md) | - |
+| LLM API usage | [llm-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/llm-guide.md) | [API Ref](https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion) |
+| Agent Sandbox | [sandbox-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/sandbox-guide.md) | [Docs](https://novita.ai/docs/guides/sandbox-overview) |
+| GPU instances | [gpu-guide.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/gpu-guide.md) | [Docs](https://novita.ai/docs/guides/gpu-instance-overview) |
+| Tool integrations | [integrations.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/integrations.md) | - |
+| Common issues | [common-issues.md](https://raw.githubusercontent.com/novitalabs/novita-skills/53a851f93bc989e5cc265a74e8804aa56c1e5e85/skills/novita-docs/references/common-issues.md) | [FAQ](https://novita.ai/docs/guides/faq) |
 
 ## Reference Selection Rules
 
-- Use `references/quick-start.md` for first-call setup and minimal examples.
-- Use `references/llm-guide.md` for chat completions, tools, vision, JSON mode, and batch jobs.
-- Use `references/sandbox-guide.md` for SDK/CLI, lifecycle, templates, and file operations.
-- Use `references/gpu-guide.md` for choosing between GPU Instance vs Serverless GPU and pricing tradeoffs.
-- Use `references/integrations.md` as the only integrations entrypoint; select sub-documents from that router.
-- Use `references/common-issues.md` first when debugging.
+- Use `quick-start.md` (from the map above) for first-call setup and minimal examples.
+- Use `llm-guide.md` (from the map above) for chat completions, tools, vision, JSON mode, and batch jobs.
+- Use `sandbox-guide.md` (from the map above) for SDK/CLI, lifecycle, templates, and file operations.
+- Use `gpu-guide.md` (from the map above) for choosing between GPU Instance vs Serverless GPU and pricing tradeoffs.
+- Use `integrations.md` (from the map above) as the only integrations entrypoint; select sub-documents from that router.
+- Use `common-issues.md` (from the map above) first when debugging.
+- If raw GitHub fetch is unavailable, fall back to local `references/*.md` files in this skill.
 - If the answer includes quotas, pricing, model counts, latency, or hardware availability, verify with live docs/API first and state the verification date.
 
 ## Dynamic Data Policy
 
 - Treat model catalog size, pricing, rate limits, latency, and regional availability as dynamic.
-- Verify dynamic values with live docs/API before answering.
 - Report dynamic values with `Verified on: YYYY-MM-DD` in final responses.
 - If live verification is unavailable, explicitly say data may be stale and link the official source.
 
