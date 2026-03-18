@@ -8,7 +8,7 @@ This repo hosts reusable skills (`SKILL.md`) for agent ecosystems that support s
 Install with:
 
 ```bash
-npx skills add novitalabs/novita-skills --skill novita-docs
+npx skills add novitalabs/novita-skills --skill <skill-name>
 ```
 
 See `Available Skills` below for supported `--skill` values.
@@ -20,6 +20,7 @@ After installation, restart your agent runtime if needed.
 Use these names with `--skill`:
 
 - `novita-docs`: Novita platform documentation and integration reference skill
+- `novita-mailer`: Draft, preview, and send branded emails on behalf of the Novita AI team via Gmail OAuth
 
 
 ## Contribution Flow
