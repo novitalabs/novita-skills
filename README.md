@@ -21,6 +21,7 @@ Use these names with `--skill`:
 
 - `novita-docs`: Novita platform documentation and integration reference skill
 - `novita-mailer`: Draft, preview, and send branded emails on behalf of the Novita AI team via Gmail OAuth
+- `novita-sandbox`: Novita Agent Sandbox CLI wrapper — build templates, manage sandboxes, and deploy agents
 
 
 ## Contribution Flow
