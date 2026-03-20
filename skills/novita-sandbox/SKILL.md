@@ -226,8 +226,8 @@ novita-sandbox-cli agent configure -n my-agent -e app.py
 # Deploy to Novita Sandbox
 novita-sandbox-cli agent launch
 
-# Invoke deployed agent
-novita-sandbox-cli agent invoke '{"prompt": "hello"}' --stream
+# Invoke deployed agent (pass env vars the sandbox needs)
+novita-sandbox-cli agent invoke '{"prompt": "hello"}' --stream --env NOVITA_API_KEY=$NOVITA_API_KEY
 ```
 
 ### 5. Template Management
@@ -252,7 +252,7 @@ novita-sandbox-cli template delete <template-id>
 
 ## Security
 
-- **API Key**: Set `NOVITA_API_KEY` env var for SDK usage. Never commit it to git — use `.env` or your shell profile.
+- **API Key**: Set `NOVITA_API_KEY` env var for SDK usage. When invoking agents, pass it explicitly with `--env NOVITA_API_KEY=$NOVITA_API_KEY` — sandbox environments do not inherit local env vars. Never commit it to git — use `.env` or your shell profile.
 - **Auth tokens**: Stored locally by `novita-sandbox-cli auth login`. Run `auth logout` to revoke.
 - **Registry credentials**: `-u`/`-w` flags in `template build` are for private Docker registries. Prefer env vars over CLI flags to avoid leaking secrets in shell history.
 
@@ -278,6 +278,7 @@ novita-sandbox-cli template delete <template-id>
 - `--cpu-count` default is 2.
 - `sandbox create` without `--detach` auto-connects a terminal session — use Ctrl+D or `exit` to detach.
 - In non-TTY environments (AI agents, CI/CD), always use `sandbox create --detach`.
+- `agent invoke` runs in a fresh sandbox — local environment variables are NOT available. Use `--env KEY=VALUE` to pass them explicitly.
 - `agent launch` timeout defaults to 300s; increase with `--timeout` for large images.
 - Config is stored in `novita.toml` in the project root after `template build`.
 
