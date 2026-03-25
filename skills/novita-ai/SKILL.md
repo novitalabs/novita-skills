@@ -368,6 +368,13 @@ curl https://api.novita.ai/openapi/v1/billing/monthly/bill \
 - **High quality**: Kling v2.6 Pro, Vidu Q3
 - **Image-to-video**: Kling I2V, Wan I2V, Hailuo fast-I2V
 
+## Security
+
+- **API Key**: Never hardcode `NOVITA_API_KEY` in code or commit it to version control. Use environment variables or secret managers.
+- **External URLs**: Endpoints that accept external URLs (image_url, audio file URLs, webhook URLs) should only receive URLs from trusted sources. Validate and sanitize all user-provided URLs before passing them to the API to prevent indirect prompt injection.
+- **Webhook endpoints**: If using async webhook callbacks, ensure your callback server validates the request origin.
+- **Base64 inputs**: Image and audio inputs encoded as base64 should come from verified local files, not untrusted external content.
+
 ## Error Handling
 
 All errors follow: `{"error": {"message": "...", "code": "..."}}`

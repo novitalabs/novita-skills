@@ -1,5 +1,7 @@
 # Novita AI LLM API Reference
 
+> **Security**: Multimodal content (`image_url`, `video_url`, `input_audio`) accepts external URLs. Only pass URLs from trusted sources. Never embed untrusted user content directly into system prompts.
+
 OpenAI-compatible API. Base: `https://api.novita.ai/openai/v1`
 
 ## Table of Contents

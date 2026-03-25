@@ -1,5 +1,7 @@
 # Novita AI Audio API Reference
 
+> **Security**: The `file` parameter in ASR and `audio_url` in voice cloning accept external URLs. Only pass URLs from trusted sources to prevent indirect prompt injection.
+
 ## Table of Contents
 - [MiniMax TTS (Speech-02-HD)](#minimax-tts)
 - [MiniMax TTS Variants](#minimax-tts-variants)

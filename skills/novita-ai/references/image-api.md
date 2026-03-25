@@ -1,5 +1,7 @@
 # Novita AI Image API Reference
 
+> **Security**: Endpoints accepting `image_file` (base64) or `images[]` (URLs) should only receive content from trusted sources. Validate user-provided URLs before passing to the API.
+
 ## Table of Contents
 - [FLUX.1 Schnell (sync)](#flux1-schnell)
 - [FLUX Kontext (async)](#flux-kontext)
