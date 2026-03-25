@@ -1,173 +1,159 @@
 # Novita AI Image API Reference
 
-> **Security**: Endpoints accepting `image_file` (base64) or `images[]` (URLs) should only receive content from trusted sources. Validate user-provided URLs before passing to the API.
+This document is a standard API reference for Novita AI image endpoints.
+All endpoints require `Authorization: Bearer $NOVITA_API_KEY` header.
 
-## Table of Contents
-- [FLUX.1 Schnell (sync)](#flux1-schnell)
-- [FLUX Kontext (async)](#flux-kontext)
-- [Stable Diffusion txt2img (async)](#stable-diffusion-txt2img)
-- [Stable Diffusion img2img (async)](#stable-diffusion-img2img)
-- [Image Editing — Sync](#image-editing-sync)
-- [Image Editing — Async](#image-editing-async)
-- [Task Result Polling](#task-result-polling)
+## Security Notice
+
+All image inputs must come from trusted, verified sources:
+- base64-encoded images should be read from local files only
+- URL-based image inputs must be validated before use
+- Never pass untrusted or user-supplied URLs directly to these endpoints
+- Enable NSFW detection for user-facing applications
 
 ## FLUX.1 Schnell
 
-`POST https://api.novita.ai/v3beta/flux-1-schnell` — **Synchronous**
+Endpoint: `POST /v3beta/flux-1-schnell` (synchronous)
 
-| Parameter | Type | Required | Range | Description |
-|-----------|------|----------|-------|-------------|
-| `prompt` | string | yes | max 1024 | Text prompt |
-| `width` | integer | yes | 64-2048 | Image width |
-| `height` | integer | yes | 64-2048 | Image height |
-| `image_num` | integer | yes | 1-8 | Number of images |
-| `steps` | integer | yes | 1-100 | Inference steps (4 recommended) |
-| `seed` | integer | yes | 0-4294967295 | Random seed |
-| `response_image_format` | string | no | png/webp/jpeg | Default: png |
+Parameters:
+- `prompt` (string, required) — text description, max 1024 characters
+- `width` (integer, required) — image width, range 64 to 2048
+- `height` (integer, required) — image height, range 64 to 2048
+- `image_num` (integer, required) — number of images, range 1 to 8
+- `steps` (integer, required) — inference steps, range 1 to 100, recommended 4
+- `seed` (integer, required) — random seed, range 0 to 4294967295
+- `response_image_format` (string, optional) — png, webp, or jpeg. Default: png
 
-**Pricing**: $0.003 × (Width × Height × Steps) / (1024 × 1024 × 4)
+Pricing: $0.003 per image at 1024x1024 with 4 steps.
 
-**Response**: `{images: [{image_url, image_url_ttl, image_type}], task: {task_id}}`
+Response contains `images` array with `image_url`, `image_url_ttl`, and `image_type` fields.
 
 ## FLUX Kontext
 
-`POST https://api.novita.ai/v3/async/flux-1-kontext-{dev,pro,max}` — **Async**
+Endpoints (all asynchronous, return task_id):
+- `POST /v3/async/flux-1-kontext-dev`
+- `POST /v3/async/flux-1-kontext-pro`
+- `POST /v3/async/flux-1-kontext-max`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `prompt` | string | yes | Text prompt |
-| `images` | array | no | Up to 4 input image URLs for editing |
-| `size` | string | no | e.g., "1024x1024" |
-| `num_inference_steps` | integer | no | Inference steps |
-| `guidance_scale` | number | no | Guidance scale |
-| `num_images` | integer | no | Number of output images |
-| `seed` | integer | no | Random seed |
-| `output_format` | string | no | png/webp/jpeg |
+Parameters:
+- `prompt` (string, required) — text description
+- `images` (array, optional) — up to 4 input image URLs for editing. Security: only use trusted image sources.
+- `size` (string, optional) — output size, e.g. "1024x1024"
+- `num_inference_steps` (integer, optional) — inference steps
+- `guidance_scale` (number, optional) — guidance scale
+- `num_images` (integer, optional) — number of output images
+- `seed` (integer, optional) — random seed
+- `output_format` (string, optional) — png, webp, or jpeg
 
-## Stable Diffusion txt2img
+## Stable Diffusion Text-to-Image
 
-`POST https://api.novita.ai/v3/async/txt2img` — **Async**
+Endpoint: `POST /v3/async/txt2img` (asynchronous, returns task_id)
 
-### request (object, required)
+The request body contains a `request` object and an optional `extra` object.
 
-| Parameter | Type | Required | Range | Description |
-|-----------|------|----------|-------|-------------|
-| `model_name` | string | yes | — | SD checkpoint (e.g., `sd_xl_base_1.0.safetensors`) |
-| `prompt` | string | yes | max 1024 | Text prompt |
-| `width` | integer | yes | 128-2048 | Image width |
-| `height` | integer | yes | 128-2048 | Image height |
-| `image_num` | integer | yes | 1-8 | Number of images |
-| `steps` | integer | yes | 1-100 | Sampling steps |
-| `guidance_scale` | number | yes | 1-30 | CFG scale |
-| `sampler_name` | string | yes | see below | Sampling method |
-| `negative_prompt` | string | no | max 1024 | Negative prompt |
-| `seed` | integer | no | — | Random seed (-1 = random) |
-| `loras` | array | no | max 5 | `[{model_name, strength: 0-1}]` |
-| `embeddings` | array | no | max 5 | `[{model_name}]` |
-| `hires_fix` | object | no | — | `{target_width, target_height, strength, upscaler}` |
-| `refiner` | object | no | — | `{switch_at: 0-1}` |
+Request object parameters:
+- `model_name` (string, required) — SD checkpoint name, e.g. "sd_xl_base_1.0.safetensors"
+- `prompt` (string, required) — text description, max 1024 characters
+- `width` (integer, required) — range 128 to 2048
+- `height` (integer, required) — range 128 to 2048
+- `image_num` (integer, required) — range 1 to 8
+- `steps` (integer, required) — range 1 to 100
+- `guidance_scale` (number, required) — range 1 to 30
+- `sampler_name` (string, required) — see sampler list below
+- `negative_prompt` (string, optional) — max 1024 characters
+- `seed` (integer, optional) — use -1 for random
+- `loras` (array, optional) — max 5 items, each with model_name and strength (0 to 1)
+- `embeddings` (array, optional) — max 5 items, each with model_name
+- `hires_fix` (object, optional) — target_width, target_height, strength, upscaler
+- `refiner` (object, optional) — switch_at (0 to 1)
 
-**Sampler names**: `Euler a`, `Euler`, `LMS`, `Heun`, `DPM2`, `DPM2 a`, `DPM++ 2S a`, `DPM++ 2M`, `DPM++ SDE`, `DPM fast`, `DPM adaptive`, `LMS Karras`, `DPM2 Karras`, `DPM2 a Karras`, `DPM++ 2S a Karras`, `DPM++ 2M Karras`, `DPM++ SDE Karras`, `DDIM`, `PLMS`, `UniPC`
+Extra object parameters:
+- `response_image_type` (string) — png, webp, or jpeg. Default: png
+- `enable_nsfw_detection` (boolean) — enable content safety filter
+- `webhook` (object) — callback URL for async notification. Security: only use HTTPS webhook URLs you control.
+- `custom_storage` (object) — optional AWS S3 storage configuration
 
-### extra (object, optional)
+Available samplers: Euler a, Euler, LMS, Heun, DPM2, DPM2 a, DPM++ 2S a, DPM++ 2M, DPM++ SDE, DPM fast, DPM adaptive, LMS Karras, DPM2 Karras, DPM2 a Karras, DPM++ 2S a Karras, DPM++ 2M Karras, DPM++ SDE Karras, DDIM, PLMS, UniPC
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `response_image_type` | string | png/webp/jpeg (default: png) |
-| `enable_nsfw_detection` | boolean | NSFW detection |
-| `webhook` | object | `{url: string}` for async callback |
-| `custom_storage` | object | AWS S3 configuration |
+## Stable Diffusion Image-to-Image
 
-**Response**: `{task_id: string}`
+Endpoint: `POST /v3/async/img2img` (asynchronous, returns task_id)
 
-## Stable Diffusion img2img
+Same parameters as txt2img with two additions:
+- `request.image_base64` (string, required) — base64-encoded source image from a trusted local file
+- `request.strength` (number, required) — transformation strength, range 0 to 1
 
-`POST https://api.novita.ai/v3/async/img2img` — **Async**
+## Image Editing — Synchronous Endpoints
 
-Same as txt2img but with additional `request.image_base64` (required) and `request.strength` (0-1, required).
-
-## Image Editing — Sync
-
-All sync endpoints accept `image_file` as base64-encoded image string.
+All sync editing endpoints accept `image_file` as a base64-encoded image string from a local file.
 
 ### Remove Background
-`POST /v3/remove-background`
-- `image_file` (string, required) — base64 image, max 16MP, max 30 MB
-- `extra.response_image_type` — png/webp/jpeg
-- **Returns**: `{image_file: "<base64>", image_type: "png"}`
+Endpoint: `POST /v3/remove-background`
+- `image_file` (string, required) — base64 image, max 16 megapixels, max 30 MB
+- `extra.response_image_type` — png, webp, or jpeg
+- Returns: base64-encoded result image
 
 ### Replace Background
-`POST /v3/replace-background`
+Endpoint: `POST /v3/replace-background`
 - `image_file` (required) — base64 image
-- `prompt` (required) — new background description
-- `extra.response_image_type`
+- `prompt` (required) — description of the new background
 
 ### Reimagine
-`POST /v3/reimagine`
+Endpoint: `POST /v3/reimagine`
 - `image_file` (required) — base64 image
-- `extra.response_image_type`
 
 ### Image to Prompt
-`POST /v3/img2prompt`
+Endpoint: `POST /v3/img2prompt`
 - `image_file` (required) — base64 image
-- **Returns**: `{text: "description of the image"}`
+- Returns text description of the image
 
 ### Remove Text
-`POST /v3/remove-text`
+Endpoint: `POST /v3/remove-text`
 - `image_file` (required) — base64 image
 
-### Cleanup (Erase)
-`POST /v3/cleanup`
+### Cleanup (Erase Region)
+Endpoint: `POST /v3/cleanup`
 - `image_file` (required) — base64 original image
-- `mask_file` (required) — base64 mask (white = erase)
+- `mask_file` (required) — base64 mask where white indicates areas to erase
 
 ### Outpainting
-`POST /v3/outpainting`
+Endpoint: `POST /v3/outpainting`
 - `image_file` (required) — base64 image
 - `prompt` (optional) — description for extended area
-- `width`, `height` — target dimensions
-- `center_x`, `center_y` — position of original in canvas
+- `width`, `height` — target canvas dimensions
+- `center_x`, `center_y` — position of original image in new canvas
 
 ### Merge Face
-`POST /v3/merge-face`
-- `face_image_file` (required) — base64 face source
+Endpoint: `POST /v3/merge-face`
+- `face_image_file` (required) — base64 face source image
 - `image_file` (required) — base64 target image
 
 ### Upscale
-`POST /v3/upscale`
+Endpoint: `POST /v3/upscale`
 - `image_file` (required) — base64 image
 
-## Image Editing — Async
+## Image Editing — Asynchronous Endpoints
+
+These endpoints return a task_id. Poll with the Task Result API.
 
 ### Inpainting
-`POST /v3/async/inpainting`
-- `request.model_name`, `request.image_base64`, `request.mask_image_base64`, `request.prompt`
-- Same structure as txt2img `request` object
+Endpoint: `POST /v3/async/inpainting`
+- Same request structure as txt2img
+- Additional: `request.image_base64` and `request.mask_image_base64`
 
-### Upscale (async variant)
-`POST /v3/async/upscale`
-- `request.model_name` (default: `RealESRGAN_x4plus_anime_6B`)
-- `request.image_base64`, `request.scale_factor`
+### Upscale (async)
+Endpoint: `POST /v3/async/upscale`
+- `request.model_name` — default: RealESRGAN_x4plus_anime_6B
+- `request.image_base64` and `request.scale_factor`
 
-### Replace Background (async variant)
-`POST /v3/async/replace-background`
+### Replace Background (async)
+Endpoint: `POST /v3/async/replace-background`
 - `image_file`, `prompt`, `extra`
 
 ## Task Result Polling
 
-`GET https://api.novita.ai/v3/async/task-result?task_id=TASK_ID`
+Endpoint: `GET /v3/async/task-result` with query parameter `task_id`
 
-Response:
-```json
-{
-  "task": {
-    "task_id": "xxx",
-    "status": "TASK_STATUS_SUCCEED",
-    "progress_percent": 100,
-    "reason": ""
-  },
-  "images": [{"image_url": "https://...", "image_url_ttl": 3600, "image_type": "png"}]
-}
-```
+The response contains a `task` object with `task_id`, `status`, `progress_percent`, and `reason` fields. On success, results are in the `images` array with `image_url`, `image_url_ttl`, and `image_type`.
 
-Status values: `TASK_STATUS_QUEUED`, `TASK_STATUS_PROCESSING`, `TASK_STATUS_SUCCEED`, `TASK_STATUS_FAILED`
+Status values: TASK_STATUS_QUEUED, TASK_STATUS_PROCESSING, TASK_STATUS_SUCCEED, TASK_STATUS_FAILED

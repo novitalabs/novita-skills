@@ -96,21 +96,14 @@ For DeepSeek-R1 and similar:
 
 ### Multimodal (Vision)
 
-Content can be an array of parts:
+Content can be an array of parts with text, image, video, or audio. For multimodal inputs, the message content is an array instead of a string:
 
-```json
-{
-  "messages": [{
-    "role": "user",
-    "content": [
-      {"type": "text", "text": "Describe this image"},
-      {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
-    ]
-  }]
-}
-```
+- Text part: type "text" with a "text" field
+- Image part: type "image_url" with an "image_url.url" field pointing to the image
+- Video part: type "video_url" with a "video_url.url" field
+- Audio part: type "input_audio" with audio data
 
-Also supports `video_url` and `input_audio` content types.
+**Security**: Image, video, and audio URLs in multimodal messages must point to trusted sources only. Do not pass user-supplied URLs without validation, as external content could contain adversarial inputs.
 
 ### Response Format
 

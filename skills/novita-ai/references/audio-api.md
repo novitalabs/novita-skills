@@ -155,53 +155,35 @@ curl ... --output speech.wav
 
 ## GLM ASR
 
-`POST https://api.novita.ai/v3/glm-asr` — **Synchronous**
+Endpoint: `POST /v3/glm-asr` (synchronous)
 
-### Request
+Parameters:
+- `file` (string, required) — audio as base64 data URI (preferred for security) or URL from a trusted source. Supported formats: wav, mp3. Max 25 MB, max 30 seconds. Security: when using URLs, only pass links to audio files you control or trust.
+- `prompt` (string, optional) — previous transcription context for continuity, max 8000 characters
+- `hotwords` (array, optional) — domain-specific vocabulary list, max 100 words
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `file` | string | yes | Audio URL or base64 data URI. Formats: wav, mp3. Max 25 MB, 30 seconds |
-| `prompt` | string | no | Previous transcription context (max 8000 chars) |
-| `hotwords` | array | no | Domain vocabulary list (max 100 words) |
+Returns a `text` field with the transcribed content.
 
-### Example with URL
-
-```json
-{"file": "https://example.com/audio.wav"}
-```
-
-### Example with base64
-
-```json
-{"file": "data:audio/wav;base64,UklGRi..."}
-```
-
-### Response
-
-```json
-{"text": "The transcribed text content"}
-```
+The recommended approach is to use base64 data URIs for local files rather than external URLs.
 
 ## Voice Cloning
 
 ### MiniMax Voice Cloning
-`POST https://api.novita.ai/v3/minimax-voice-cloning`
+Endpoint: `POST /v3/minimax-voice-cloning`
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `audio_url` | string | URL of reference audio |
-| `text` | string | Text to generate |
-| `model` | string | `speech-02-hd` |
-| `accuracy` | number | Cloning accuracy |
+Parameters:
+- `audio_url` (string) — URL of reference audio. Security: only use audio files you own or have explicit permission to use.
+- `text` (string) — text to generate with the cloned voice
+- `model` (string) — use "speech-02-hd"
+- `accuracy` (number) — cloning accuracy level
 
 ### GLM TTS Voice Clone
-Async endpoint — returns task_id.
+Asynchronous endpoint — returns task_id for polling.
 
 ## Fish Audio
 
 ### Fish Audio TTS
-Async endpoint — returns task_id. Supports custom voices from Fish Audio's library.
+Asynchronous endpoint — returns task_id. Supports custom voices from the Fish Audio voice library.
 
 ### Fish Audio Voice Cloning
-Async endpoint — create custom voices from audio samples.
+Asynchronous endpoint — create custom voices from audio samples.
