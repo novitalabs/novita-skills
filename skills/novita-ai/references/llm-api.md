@@ -1,6 +1,6 @@
 # Novita AI LLM API Reference
 
-> **Security**: Multimodal content (`image_url`, `video_url`, `input_audio`) accepts external URLs. Only pass URLs from trusted sources. Never embed untrusted user content directly into system prompts.
+> **Security**: All inputs — text, images, video, audio — should come from trusted sources only. Never embed unverified content directly into system prompts.
 
 OpenAI-compatible API. Base: `https://api.novita.ai/openai/v1`
 
@@ -99,11 +99,11 @@ For DeepSeek-R1 and similar:
 Content can be an array of parts with text, image, video, or audio. For multimodal inputs, the message content is an array instead of a string:
 
 - Text part: type "text" with a "text" field
-- Image part: type "image_url" with an "image_url.url" field pointing to the image
-- Video part: type "video_url" with a "video_url.url" field
-- Audio part: type "input_audio" with audio data
+- Image part: include the image data or a reference to a trusted local image
+- Video part: include the video data or a reference to a trusted local video
+- Audio part: type "input_audio" with the audio data
 
-**Security**: Image, video, and audio URLs in multimodal messages must point to trusted sources only. Do not pass user-supplied URLs without validation, as external content could contain adversarial inputs.
+All media references in multimodal messages should come from trusted local sources only.
 
 ### Response Format
 

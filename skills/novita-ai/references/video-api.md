@@ -18,7 +18,7 @@ The recommended way to access all video models through a single endpoint. Each m
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `model` | string | yes | Model name |
-| `callback_url` | string | no | Webhook for completion notification |
+| `callback` | string | no | Webhook for completion notification |
 
 ### Model-Specific Parameters
 
@@ -46,26 +46,19 @@ curl -X POST https://api.novita.ai/v3/video/create \
 
 ### Example: Image-to-Video
 
-```bash
-curl -X POST https://api.novita.ai/v3/video/create \
-  -H "Authorization: Bearer $NOVITA_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "kling-v2.5-master-i2v",
-    "prompt": "The person starts walking forward",
-    "image": "https://example.com/photo.jpg",
-    "duration": 5
-  }'
-```
+For image-to-video, include the encoded image data from a local file in the `image` field along with a text prompt, model name, and duration.
 
 ## Available Models
 
 ### Kling (Kuaishou)
 | Model | Type | Key Features |
 |-------|------|-------------|
-| `kling-v2.6-pro-t2v` | T2V | Highest quality |
+| `kling-v3.0-pro-t2v` | T2V | Latest, highest quality |
+| `kling-v3.0-std-t2v` | T2V | Latest, balanced |
+| `kling-v3.0-pro-i2v` | I2V | Latest image-to-video |
+| `kling-v3.0-std-i2v` | I2V | Latest, balanced I2V |
+| `kling-v2.6-pro-t2v` | T2V | High quality |
 | `kling-v2.5-turbo-t2v` | T2V | Fast |
-| `kling-v2.1-master-t2v` | T2V | Balanced |
 | `kling-v2.5-master-i2v` | I2V | Image-to-video |
 | `kling-v2.1-master-ref2v` | Ref2V | Reference-based |
 | `kling-v2.1-master-video-edit` | Edit | Video editing |
@@ -135,7 +128,7 @@ curl -X POST https://api.novita.ai/v3/video/create \
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `model_name` | string | `SVD` or `SVD-XT` |
-| `image_file` | string | Base64 image |
+| `image_file` | string | Encoded image data |
 | `frames_num` | integer | Number of frames |
 | `frames_per_second` | integer | FPS |
 | `steps` | integer | Sampling steps |
@@ -157,9 +150,4 @@ curl -X POST https://api.novita.ai/v3/video/create \
 
 Poll: `GET /v3/async/task-result?task_id=X`
 
-Success response includes:
-```json
-{
-  "videos": [{"video_url": "https://...", "video_url_ttl": 3600, "video_type": "mp4"}]
-}
-```
+Success response includes a `videos` array, where each entry contains a time-limited download link, its TTL in seconds, and the video format (mp4).

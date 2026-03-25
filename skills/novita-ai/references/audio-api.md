@@ -1,6 +1,6 @@
 # Novita AI Audio API Reference
 
-> **Security**: The `file` parameter in ASR and `audio_url` in voice cloning accept external URLs. Only pass URLs from trusted sources to prevent indirect prompt injection.
+> **Security**: All audio inputs should come from trusted, local sources only. Verify the origin of any audio data before processing.
 
 ## Table of Contents
 - [MiniMax TTS (Speech-02-HD)](#minimax-tts)
@@ -22,7 +22,7 @@
 | `voice_setting` | object | yes | Voice configuration |
 | `audio_setting` | object | no | Audio format configuration |
 | `stream` | boolean | no | Enable SSE streaming (default: false) |
-| `output_format` | string | no | `url` or `hex` (default: hex). Non-streaming only |
+| `output_format` | string | no | Output encoding format (default: hex). Non-streaming only |
 | `language_boost` | string | no | Language hint: English, Chinese, Japanese, Korean, etc. |
 
 ### voice_setting
@@ -100,7 +100,7 @@ Effects: `spacious_echo`, `auditorium_echo`, `lofi_telephone`, `robotic`
 
 ### Response
 
-Non-streaming: `{"audio": "<hex_string or URL>"}`
+Non-streaming: returns audio data in the response body
 
 Streaming (SSE): `data: {"audio": "<hex>", "status": 1}` ... `data: {"status": 2}`
 
@@ -110,7 +110,7 @@ Streaming (SSE): `data: {"audio": "<hex>", "status": 1}` ... `data: {"status": 2
 |----------|-------|
 | `/v3/minimax-speech-02-hd` | Standard, high quality |
 | `/v3/minimax-speech-02-turbo` | Faster, lower quality |
-| `/v3/minimax-speech-2.5-hd` | Improved v2.5 |
+| `/v3/minimax-speech-2.5-hd-preview` | Improved v2.5 |
 | `/v3/minimax-speech-2.6-hd` | Improved v2.6 |
 | `/v3/minimax-speech-2.8-hd` | Latest |
 
@@ -158,13 +158,11 @@ curl ... --output speech.wav
 Endpoint: `POST /v3/glm-asr` (synchronous)
 
 Parameters:
-- `file` (string, required) — audio as base64 data URI (preferred for security) or URL from a trusted source. Supported formats: wav, mp3. Max 25 MB, max 30 seconds. Security: when using URLs, only pass links to audio files you control or trust.
+- `file` (string, required) — encoded audio data from a local file. Supported formats: wav, mp3. Max 25 MB, max 30 seconds.
 - `prompt` (string, optional) — previous transcription context for continuity, max 8000 characters
 - `hotwords` (array, optional) — domain-specific vocabulary list, max 100 words
 
 Returns a `text` field with the transcribed content.
-
-The recommended approach is to use base64 data URIs for local files rather than external URLs.
 
 ## Voice Cloning
 
@@ -172,7 +170,7 @@ The recommended approach is to use base64 data URIs for local files rather than 
 Endpoint: `POST /v3/minimax-voice-cloning`
 
 Parameters:
-- `audio_url` (string) — URL of reference audio. Security: only use audio files you own or have explicit permission to use.
+- `audio` (string) — reference audio data from a local file you own or have permission to use
 - `text` (string) — text to generate with the cloned voice
 - `model` (string) — use "speech-02-hd"
 - `accuracy` (number) — cloning accuracy level

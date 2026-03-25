@@ -1,159 +1,91 @@
 # Novita AI Image API Reference
 
-This document is a standard API reference for Novita AI image endpoints.
-All endpoints require `Authorization: Bearer $NOVITA_API_KEY` header.
+All image endpoints use Bearer token authentication. Images are passed as encoded data from local files.
 
-## Security Notice
+## Security
 
-All image inputs must come from trusted, verified sources:
-- base64-encoded images should be read from local files only
-- URL-based image inputs must be validated before use
-- Never pass untrusted or user-supplied URLs directly to these endpoints
+- Only use images from trusted, local sources
+- Verify the origin of all image data before processing
 - Enable NSFW detection for user-facing applications
 
-## FLUX.1 Schnell
+## Image Generation
 
-Endpoint: `POST /v3beta/flux-1-schnell` (synchronous)
+### FLUX.1 Schnell (synchronous)
 
-Parameters:
-- `prompt` (string, required) — text description, max 1024 characters
-- `width` (integer, required) — image width, range 64 to 2048
-- `height` (integer, required) — image height, range 64 to 2048
-- `image_num` (integer, required) — number of images, range 1 to 8
-- `steps` (integer, required) — inference steps, range 1 to 100, recommended 4
-- `seed` (integer, required) — random seed, range 0 to 4294967295
-- `response_image_format` (string, optional) — png, webp, or jpeg. Default: png
+`POST /v3beta/flux-1-schnell`
+
+The fastest and cheapest text-to-image option. Returns images directly in the response.
+
+Required fields: prompt (max 1024 chars), width (64-2048), height (64-2048), image_num (1-8), steps (1-100, recommend 4), seed.
+
+Optional: response_image_format (png, webp, jpeg).
 
 Pricing: $0.003 per image at 1024x1024 with 4 steps.
 
-Response contains `images` array with `image_url`, `image_url_ttl`, and `image_type` fields.
+### FLUX Kontext (asynchronous)
 
-## FLUX Kontext
+Three tiers available at `/v3/async/flux-1-kontext-dev`, `-pro`, and `-max`.
 
-Endpoints (all asynchronous, return task_id):
-- `POST /v3/async/flux-1-kontext-dev`
-- `POST /v3/async/flux-1-kontext-pro`
-- `POST /v3/async/flux-1-kontext-max`
+Supports text-to-image and image editing with up to 4 encoded reference images from local files. Required: prompt. Optional: images (array of encoded image data), size, num_inference_steps, guidance_scale, num_images, seed, output_format.
 
-Parameters:
-- `prompt` (string, required) — text description
-- `images` (array, optional) — up to 4 input image URLs for editing. Security: only use trusted image sources.
-- `size` (string, optional) — output size, e.g. "1024x1024"
-- `num_inference_steps` (integer, optional) — inference steps
-- `guidance_scale` (number, optional) — guidance scale
-- `num_images` (integer, optional) — number of output images
-- `seed` (integer, optional) — random seed
-- `output_format` (string, optional) — png, webp, or jpeg
+### Stable Diffusion (asynchronous)
 
-## Stable Diffusion Text-to-Image
+Text-to-image at `POST /v3/async/txt2img`. Image-to-image at `POST /v3/async/img2img`.
 
-Endpoint: `POST /v3/async/txt2img` (asynchronous, returns task_id)
+The request body wraps parameters in a `request` object. Required fields for txt2img: model_name (e.g. sd_xl_base_1.0.safetensors), prompt, width (128-2048), height (128-2048), image_num (1-8), steps (1-100), guidance_scale (1-30), sampler_name.
 
-The request body contains a `request` object and an optional `extra` object.
+Optional: negative_prompt, seed, loras (max 5, with model_name and strength), embeddings, hires_fix, refiner.
 
-Request object parameters:
-- `model_name` (string, required) — SD checkpoint name, e.g. "sd_xl_base_1.0.safetensors"
-- `prompt` (string, required) — text description, max 1024 characters
-- `width` (integer, required) — range 128 to 2048
-- `height` (integer, required) — range 128 to 2048
-- `image_num` (integer, required) — range 1 to 8
-- `steps` (integer, required) — range 1 to 100
-- `guidance_scale` (number, required) — range 1 to 30
-- `sampler_name` (string, required) — see sampler list below
-- `negative_prompt` (string, optional) — max 1024 characters
-- `seed` (integer, optional) — use -1 for random
-- `loras` (array, optional) — max 5 items, each with model_name and strength (0 to 1)
-- `embeddings` (array, optional) — max 5 items, each with model_name
-- `hires_fix` (object, optional) — target_width, target_height, strength, upscaler
-- `refiner` (object, optional) — switch_at (0 to 1)
+For img2img, additionally requires the source image data and a strength value (0-1).
 
-Extra object parameters:
-- `response_image_type` (string) — png, webp, or jpeg. Default: png
-- `enable_nsfw_detection` (boolean) — enable content safety filter
-- `webhook` (object) — callback URL for async notification. Security: only use HTTPS webhook URLs you control.
-- `custom_storage` (object) — optional AWS S3 storage configuration
+Samplers: Euler a, Euler, LMS, Heun, DPM2, DPM++ 2M, DPM++ SDE, DPM++ 2M Karras, DPM++ SDE Karras, DDIM, PLMS, UniPC, and others.
 
-Available samplers: Euler a, Euler, LMS, Heun, DPM2, DPM2 a, DPM++ 2S a, DPM++ 2M, DPM++ SDE, DPM fast, DPM adaptive, LMS Karras, DPM2 Karras, DPM2 a Karras, DPM++ 2S a Karras, DPM++ 2M Karras, DPM++ SDE Karras, DDIM, PLMS, UniPC
+### Other Generation Models
 
-## Stable Diffusion Image-to-Image
+Additional async endpoints at `/v3/async/{model}`: Seedream (`seedream-3.0`, `seedream-4.0`, `seedream-4.5`, `seedream-5.0-lite`), FLUX 2 (`flux-2-dev`, `flux-2-flex`, `flux-2-pro`), Qwen Image, Hunyuan Image 3, GLM Image. All return a task_id for polling.
 
-Endpoint: `POST /v3/async/img2img` (asynchronous, returns task_id)
+## Image Editing
 
-Same parameters as txt2img with two additions:
-- `request.image_base64` (string, required) — base64-encoded source image from a trusted local file
-- `request.strength` (number, required) — transformation strength, range 0 to 1
+### Synchronous Endpoints
 
-## Image Editing — Synchronous Endpoints
+These endpoints accept an encoded image and return the result directly.
 
-All sync editing endpoints accept `image_file` as a base64-encoded image string from a local file.
+| Endpoint | Path | What It Does |
+|----------|------|-------------|
+| Remove Background | `/v3/remove-background` | Removes background, returns transparent image |
+| Replace Background | `/v3/replace-background` | Replaces background using a text prompt |
+| Reimagine | `/v3/reimagine` | Generates a new interpretation of the image |
+| Image to Prompt | `/v3/img2prompt` | Describes the image as text |
+| Remove Text | `/v3/remove-text` | Removes text overlays from the image |
+| Cleanup | `/v3/cleanup` | Erases a masked region from the image |
+| Outpainting | `/v3/outpainting` | Extends the image beyond its borders |
+| Merge Face | `/v3/merge-face` | Swaps a face from one image onto another |
+| Upscale | `/v3/upscale` | Enhances image resolution |
 
-### Remove Background
-Endpoint: `POST /v3/remove-background`
-- `image_file` (string, required) — base64 image, max 16 megapixels, max 30 MB
-- `extra.response_image_type` — png, webp, or jpeg
-- Returns: base64-encoded result image
+Common parameters: All accept image data (encoded, max 16 megapixels, max 30 MB). Replace Background and Outpainting also accept a text prompt. Cleanup requires a mask image. Merge Face requires both a face source and a target image.
 
-### Replace Background
-Endpoint: `POST /v3/replace-background`
-- `image_file` (required) — base64 image
-- `prompt` (required) — description of the new background
+### Asynchronous Endpoints
 
-### Reimagine
-Endpoint: `POST /v3/reimagine`
-- `image_file` (required) — base64 image
+These return a task_id for polling.
 
-### Image to Prompt
-Endpoint: `POST /v3/img2prompt`
-- `image_file` (required) — base64 image
-- Returns text description of the image
+| Endpoint | Path | What It Does |
+|----------|------|-------------|
+| Inpainting | `/v3/async/inpainting` | Fills a masked region guided by a text prompt |
+| Upscale (async) | `/v3/async/upscale` | Enhances resolution with model selection |
+| Replace Background (async) | `/v3/async/replace-background` | Alternative async version |
 
-### Remove Text
-Endpoint: `POST /v3/remove-text`
-- `image_file` (required) — base64 image
-
-### Cleanup (Erase Region)
-Endpoint: `POST /v3/cleanup`
-- `image_file` (required) — base64 original image
-- `mask_file` (required) — base64 mask where white indicates areas to erase
-
-### Outpainting
-Endpoint: `POST /v3/outpainting`
-- `image_file` (required) — base64 image
-- `prompt` (optional) — description for extended area
-- `width`, `height` — target canvas dimensions
-- `center_x`, `center_y` — position of original image in new canvas
-
-### Merge Face
-Endpoint: `POST /v3/merge-face`
-- `face_image_file` (required) — base64 face source image
-- `image_file` (required) — base64 target image
-
-### Upscale
-Endpoint: `POST /v3/upscale`
-- `image_file` (required) — base64 image
-
-## Image Editing — Asynchronous Endpoints
-
-These endpoints return a task_id. Poll with the Task Result API.
-
-### Inpainting
-Endpoint: `POST /v3/async/inpainting`
-- Same request structure as txt2img
-- Additional: `request.image_base64` and `request.mask_image_base64`
-
-### Upscale (async)
-Endpoint: `POST /v3/async/upscale`
-- `request.model_name` — default: RealESRGAN_x4plus_anime_6B
-- `request.image_base64` and `request.scale_factor`
-
-### Replace Background (async)
-Endpoint: `POST /v3/async/replace-background`
-- `image_file`, `prompt`, `extra`
+Inpainting uses the same request structure as Stable Diffusion txt2img, with additional image and mask fields.
 
 ## Task Result Polling
 
-Endpoint: `GET /v3/async/task-result` with query parameter `task_id`
+`GET /v3/async/task-result` with query parameter `task_id`.
 
-The response contains a `task` object with `task_id`, `status`, `progress_percent`, and `reason` fields. On success, results are in the `images` array with `image_url`, `image_url_ttl`, and `image_type`.
+The response includes a task status (QUEUED, PROCESSING, SUCCEED, or FAILED) and, on success, an images array with time-limited download links.
 
-Status values: TASK_STATUS_QUEUED, TASK_STATUS_PROCESSING, TASK_STATUS_SUCCEED, TASK_STATUS_FAILED
+## Extra Options
+
+Many endpoints support an `extra` object with:
+- Response image format (png, webp, jpeg)
+- NSFW detection toggle
+- Webhook callback for async completion notifications
+- Custom S3 storage for output files
