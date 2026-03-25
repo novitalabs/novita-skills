@@ -17,7 +17,7 @@ compatibility: >
   (Python openai, TypeScript @ai-sdk). No special dependencies required.
 metadata:
   author: Novita AI
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: Bash(curl:*) Bash(python:*) Bash(node:*) Bash(pip:*) Bash(npm:*) Read
 ---
 
