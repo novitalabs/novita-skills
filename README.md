@@ -3,25 +3,30 @@
 Official Novita Skills repository.
 This repo hosts reusable skills (`SKILL.md`) for agent ecosystems that support skill-based workflows.
 
-## Install Skills From This Repository
+## Quick Start
 
-Install with:
+```bash
+npx skills add novitalabs/novita-skills --skill novita-ai
+```
+
+This installs the **novita-ai** skill — direct API access to all Novita AI services: LLM (OpenAI-compatible), image generation & editing, video generation, audio (TTS/ASR), GPU cloud, and serverless endpoints. Works with Claude Code, Cursor, Codex, GitHub Copilot, and other agent clients.
+
+## Install Other Skills
 
 ```bash
 npx skills add novitalabs/novita-skills --skill <skill-name>
 ```
 
-See `Available Skills` below for supported `--skill` values.
-
 After installation, restart your agent runtime if needed.
 
 ## Available Skills
 
-Use these names with `--skill`:
-
-- `novita-docs`: Novita platform documentation and integration reference skill
-- `novita-mailer`: Draft, preview, and send branded emails on behalf of the Novita AI team via Gmail OAuth
-- `novita-sandbox`: Novita Agent Sandbox CLI wrapper — build templates, manage sandboxes, and deploy agents
+| Skill | Description | Install |
+|-------|-------------|---------|
+| **novita-ai** | Full Novita AI API — LLM, image, video, audio, GPU cloud, serverless | `npx skills add novitalabs/novita-skills --skill novita-ai` |
+| novita-docs | Platform documentation and integration reference | `--skill novita-docs` |
+| novita-mailer | Draft and send branded emails via Gmail OAuth | `--skill novita-mailer` |
+| novita-sandbox | Agent Sandbox CLI — build templates, manage sandboxes, deploy agents | `--skill novita-sandbox` |
 
 
 ## Contribution Flow
