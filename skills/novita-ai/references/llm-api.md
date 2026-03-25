@@ -20,7 +20,7 @@ OpenAI-compatible API. Base: `https://api.novita.ai/openai/v1`
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `model` | string | Model name (e.g., `deepseek/deepseek-v3-0324`) |
+| `model` | string | Model name (e.g., `moonshotai/kimi-k2.5`) |
 | `messages` | array | Array of `{role, content}` objects |
 | `max_tokens` | integer | Maximum tokens to generate |
 
@@ -112,7 +112,7 @@ All media references in multimodal messages should come from trusted local sourc
   "id": "chatcmpl-xxx",
   "object": "chat.completion",
   "created": 1234567890,
-  "model": "deepseek/deepseek-v3-0324",
+  "model": "moonshotai/kimi-k2.5",
   "choices": [{
     "index": 0,
     "finish_reason": "stop",

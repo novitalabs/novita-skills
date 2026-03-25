@@ -2,8 +2,8 @@
 name: novita-ai
 description: >
   Novita AI: LLM, Image Generation & Editing, Video Generation, Audio (TTS/ASR), and GPU Cloud.
-  Use this skill whenever the user wants to call Novita AI APIs — chat with LLMs (DeepSeek,
-  Llama, Qwen), generate images (FLUX, Stable Diffusion, Seedream, Hunyuan Image), edit images
+  Use this skill whenever the user wants to call Novita AI APIs — chat with LLMs (Kimi K2.5,
+  MiniMax M2.7, GLM-5, DeepSeek), generate images (FLUX, Stable Diffusion, Seedream, Hunyuan Image), edit images
   (remove background, upscale, inpainting, img2img, outpainting, reimagine, merge face, replace
   background, remove text), generate videos (Kling, Wan, Hunyuan, Minimax Hailuo, Vidu, PixVerse,
   Seedance), do text-to-speech or speech-to-text (MiniMax TTS, GLM TTS, Fish Audio, ASR, voice
@@ -57,13 +57,13 @@ import os
 from openai import OpenAI
 client = OpenAI(base_url="https://api.novita.ai/openai", api_key=os.environ["NOVITA_API_KEY"])
 response = client.chat.completions.create(
-    model="deepseek/deepseek-v3-0324",
+    model="moonshotai/kimi-k2.5",
     messages=[{"role": "user", "content": "Hello"}],
     max_tokens=512,
 )
 ```
 
-**Models**: DeepSeek V3, DeepSeek R1, Llama 3.1 70B, Qwen 2.5 72B, and more via `/openai/v1/models`.
+**Models**: Kimi K2.5, MiniMax M2.7, GLM-5, DeepSeek V3, DeepSeek R1, and more via `/openai/v1/models`.
 
 **Features**: vision (multimodal), reasoning, function calling, structured outputs, prompt caching, batch API.
 
