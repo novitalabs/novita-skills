@@ -18,11 +18,12 @@ Last verified: 2026-02-09
 ## Quick Setup
 
 ```python
+import os
 from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.novita.ai/openai",
-    api_key="<YOUR_API_KEY>",
+    api_key=os.environ["NOVITA_API_KEY"],
 )
 ```
 
@@ -30,7 +31,7 @@ client = OpenAI(
 
 ```python
 response = client.chat.completions.create(
-    model="deepseek/deepseek-r1",
+    model=os.environ["NOVITA_MODEL"],
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Hello!"}
@@ -48,7 +49,8 @@ for chunk in response:
 ### Model Selection
 - Browse models: https://novita.ai/models
 - Query via API: `GET https://api.novita.ai/openai/v1/models`
-- Format: `provider/model-name` (e.g., `deepseek/deepseek-r1`)
+- Format: `provider/model-name`
+- Do not assume a default model; use the user's selected model or `NOVITA_MODEL`.
 - Fetch latest models:
 ```bash
 curl https://api.novita.ai/openai/v1/models \
@@ -78,11 +80,9 @@ curl https://api.novita.ai/openai/v1/models \
 
 Enable LLMs to call external functions/APIs.
 
-### Supported Models
-- `deepseek/deepseek-v3.2`
-- `qwen/qwen3-coder-next`
-- `zai-org/glm-4.7-flash`
-- [View all](https://novita.ai/models)
+### Model Support
+
+Function-calling support varies by model. Verify current support in the live model catalog before selecting a model.
 
 ### Example
 
@@ -111,7 +111,7 @@ tools = [
 ]
 
 response = client.chat.completions.create(
-    model="deepseek/deepseek-v3.2",
+    model=os.environ["NOVITA_MODEL"],
     messages=[{"role": "user", "content": "What's the weather in Tokyo?"}],
     tools=tools,
 )
@@ -127,16 +127,15 @@ print(tool_call.function.arguments)  # '{"location": "Tokyo, Japan"}'
 
 Process images with Vision-Language Models.
 
-### Supported Models
-- `qwen/qwen2-vl-72b-instruct`
-- `meta-llama/llama-4-maverick`
-- [View all vision models](https://novita.ai/models)
+### Model Support
+
+Vision support varies by model. Verify current support in the live model catalog before selecting a model.
 
 ### Image via URL
 
 ```python
 response = client.chat.completions.create(
-    model="qwen/qwen2-vl-72b-instruct",
+    model=os.environ["NOVITA_MODEL"],
     messages=[
         {
             "role": "user",
@@ -164,7 +163,7 @@ with open("image.jpg", "rb") as f:
     base64_image = base64.b64encode(f.read()).decode("utf-8")
 
 response = client.chat.completions.create(
-    model="qwen/qwen2-vl-72b-instruct",
+    model=os.environ["NOVITA_MODEL"],
     messages=[
         {
             "role": "user",
@@ -193,7 +192,7 @@ Force LLM to output valid JSON matching your schema.
 
 ```python
 response = client.chat.completions.create(
-    model="deepseek/deepseek-v3.2",
+    model=os.environ["NOVITA_MODEL"],
     messages=[
         {"role": "system", "content": "Extract expense info as JSON."},
         {"role": "user", "content": "I spent $50 on lunch and $30 on coffee today."}
@@ -260,8 +259,8 @@ results = client.files.content(status.output_file_id)
 ### Prompt Caching
 Automatically caches repeated prompt prefixes for faster responses and lower costs.
 
-### Reasoning Models
-Models like `deepseek/deepseek-r1` show reasoning process:
+### Reasoning Output
+Some models expose reasoning content:
 ```python
 print(response.choices[0].message.reasoning_content)
 ```
@@ -270,7 +269,7 @@ print(response.choices[0].message.reasoning_content)
 Always use streaming for long outputs to avoid timeouts:
 ```python
 stream = client.chat.completions.create(
-    model="deepseek/deepseek-r1",
+    model=os.environ["NOVITA_MODEL"],
     messages=[...],
     stream=True,
 )

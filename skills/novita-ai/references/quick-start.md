@@ -17,15 +17,16 @@ Novita AI is **OpenAI SDK compatible**. Just change the base URL.
 ### Python (OpenAI SDK)
 
 ```python
+import os
 from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.novita.ai/openai",
-    api_key="<YOUR_API_KEY>",
+    api_key=os.environ["NOVITA_API_KEY"],
 )
 
 response = client.chat.completions.create(
-    model="deepseek/deepseek-r1",
+    model=os.environ["NOVITA_MODEL"],
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Hello!"}
@@ -42,7 +43,7 @@ curl https://api.novita.ai/openai/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $NOVITA_API_KEY" \
   -d '{
-    "model": "deepseek/deepseek-r1",
+    "model": "<MODEL_NAME>",
     "messages": [
       {"role": "system", "content": "You are a helpful assistant."},
       {"role": "user", "content": "Hello!"}
@@ -58,27 +59,19 @@ For other SDKs/languages, generate equivalent code from this Python baseline and
 - **Browse models**: https://novita.ai/models
 - **Query via API**: `GET https://api.novita.ai/openai/v1/models`
 
-### Popular Models
+### Model Selection
 
-Model availability changes frequently. Confirm current availability at https://novita.ai/models.
-
-| Model | Use Case |
-|-------|----------|
-| `deepseek/deepseek-r1` | Reasoning, coding |
-| `deepseek/deepseek-v3` | General purpose |
-| `qwen/qwen3-235b-a22b` | Large context |
-| `meta-llama/llama-4-maverick` | Fast inference |
+Do not assume a default model. Use the model selected by the user or application. If no model is selected, browse https://novita.ai/models or query the model API and choose based on the task requirements.
 
 ## 4. Add Credits
 
 New users get free credits. To add more:
 1. Visit [Billing](https://novita.ai/billing)
 2. Add payment method
-3. Enable [Auto Top-up](https://novita.ai/docs/guides/auto-top-up) (recommended)
+3. Optionally enable [Auto Top-up](https://novita.ai/docs/guides/auto-top-up)
 
 ## Next Steps
 
 - [LLM API Guide](llm-guide.md) - Advanced features like function calling, vision
-- [Sandbox Guide](sandbox-guide.md) - Run code in cloud sandbox
 - [GPU Guide](gpu-guide.md) - Dedicated GPU instances
 - [Integrations](integrations.md) - Use with LangChain, Cursor, etc.

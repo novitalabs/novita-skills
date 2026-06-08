@@ -19,7 +19,7 @@ Last verified: 2026-02-09
 
 ### Model Not Found
 - Model names are case-sensitive
-- Format: `provider/model-name` (e.g., `deepseek/deepseek-r1`)
+- Format: `provider/model-name`
 - Query available models: `GET https://api.novita.ai/openai/v1/models`
 
 ### Rate Limit Exceeded
@@ -91,20 +91,24 @@ CUDA is backward compatible. If you need CUDA 12.1, any version >= 12.1 works.
 ### OpenAI SDK Not Working
 Use this baseline client configuration:
 ```python
+import os
+from openai import OpenAI
+
 client = OpenAI(
     base_url="https://api.novita.ai/openai",  # Note: /openai suffix
-    api_key="<YOUR_API_KEY>",
+    api_key=os.environ["NOVITA_API_KEY"],
 )
 ```
 
 ### LangChain Integration
 ```python
+import os
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
     base_url="https://api.novita.ai/openai",
-    api_key="<YOUR_API_KEY>",
-    model="deepseek/deepseek-r1",
+    api_key=os.environ["NOVITA_API_KEY"],
+    model=os.environ["NOVITA_MODEL"],
 )
 ```
 
