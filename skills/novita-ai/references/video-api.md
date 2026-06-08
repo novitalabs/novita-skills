@@ -4,14 +4,14 @@ All video endpoints are async — they return `task_id`. Poll with `GET /v3/asyn
 
 ## Table of Contents
 - [Unified Video API](#unified-video-api)
-- [Available Models](#available-models)
+- [Model Discovery](#model-discovery)
 - [Legacy SD Video Endpoints](#legacy-sd-video-endpoints)
 
 ## Unified Video API
 
 `POST https://api.novita.ai/v3/video/create` — **Async**
 
-The recommended way to access all video models through a single endpoint. Each model has its own parameter schema.
+Use this endpoint for unified video task creation. Each model has its own parameter schema.
 
 ### Common Parameters
 
@@ -37,7 +37,7 @@ curl -X POST https://api.novita.ai/v3/video/create \
   -H "Authorization: Bearer $NOVITA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "hailuo-02",
+    "model": "<VIDEO_MODEL_NAME>",
     "prompt": "A cat playing piano in a jazz bar",
     "resolution": "720p",
     "duration": 5
@@ -48,65 +48,16 @@ curl -X POST https://api.novita.ai/v3/video/create \
 
 For image-to-video, include the encoded image data from a local file in the `image` field along with a text prompt, model name, and duration.
 
-## Available Models
+## Model Discovery
 
-### Kling (Kuaishou)
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `kling-v3.0-pro-t2v` | T2V | Latest, highest quality |
-| `kling-v3.0-std-t2v` | T2V | Latest, balanced |
-| `kling-v3.0-pro-i2v` | I2V | Latest image-to-video |
-| `kling-v3.0-std-i2v` | I2V | Latest, balanced I2V |
-| `kling-v2.6-pro-t2v` | T2V | High quality |
-| `kling-v2.5-turbo-t2v` | T2V | Fast |
-| `kling-v2.5-master-i2v` | I2V | Image-to-video |
-| `kling-v2.1-master-ref2v` | Ref2V | Reference-based |
-| `kling-v2.1-master-video-edit` | Edit | Video editing |
-| `kling-o1-t2v` | T2V | Reasoning model |
+Do not use a static video model list as a recommendation. Fetch the unified video API configuration and select the model requested by the user or required by the application.
 
-### Wan (Alibaba)
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `wan-2.6-t2v` | T2V | Latest |
-| `wan-2.5-t2v-preview` | T2V | Fast preview |
-| `wan-2.6-i2v` | I2V | Image-to-video |
-| `wan-2.0-t2v`, `wan-2.2-t2v` | T2V | Earlier versions |
+```bash
+curl https://api.novita.ai/v3/admin/video-unify-api/config \
+  -H "Authorization: Bearer $NOVITA_API_KEY"
+```
 
-### Minimax Hailuo
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `hailuo-02` | T2V, I2V | General purpose |
-| `hailuo-2.3-t2v` | T2V | Latest |
-| `hailuo-2.3-fast-i2v` | I2V | Fast image-to-video |
-
-### Hunyuan (Tencent)
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `hunyuan-video-fast` | T2V | Cost-effective |
-
-### Vidu (Shengshu)
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `vidu-q3-text2video` | T2V | Highest quality |
-| `vidu-q2-img2video` | I2V | Image-to-video |
-| `vidu-q1-startend2video` | Start/End | Start+end frame control |
-| `vidu-q1-reference2video` | Ref2V | Reference-based |
-
-### PixVerse
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `pixverse-v4.5-t2v` | T2V | — |
-| `pixverse-v4.5-i2v` | I2V | — |
-
-### Seedance (ByteDance)
-| Model | Type | Key Features |
-|-------|------|-------------|
-| `seedance-v1.5-pro-t2v` | T2V | Pro quality |
-| `seedance-v1.5-lite-t2v` | T2V | Faster, cheaper |
-| `seedance-v1-i2v` | I2V | — |
-
-### Other
-- `heygen-video-translate` — Video translation
+Use the returned `json_schema` to build valid request bodies for the selected model.
 
 ## Legacy SD Video Endpoints
 
@@ -139,7 +90,7 @@ For image-to-video, include the encoded image data from a local file in the `ima
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `model_name` | string | `hunyuan-video-fast` |
+| `model_name` | string | Model name for the selected legacy endpoint |
 | `prompt` | string | Text prompt |
 | `width`, `height` | integer | Dimensions |
 | `steps` | integer | Sampling steps |

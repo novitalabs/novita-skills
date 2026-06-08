@@ -14,13 +14,13 @@ All image endpoints use Bearer token authentication. Images are passed as encode
 
 `POST /v3beta/flux-1-schnell`
 
-The fastest and cheapest text-to-image option. Returns images directly in the response.
+Synchronous text-to-image endpoint. Returns images directly in the response.
 
-Required fields: prompt (max 1024 chars), width (64-2048), height (64-2048), image_num (1-8), steps (1-100, recommend 4), seed.
+Required fields: prompt (max 1024 chars), width (64-2048), height (64-2048), image_num (1-8), steps (1-100), seed.
 
 Optional: response_image_format (png, webp, jpeg).
 
-Pricing: $0.003 per image at 1024x1024 with 4 steps.
+Verify current pricing at https://novita.ai/pricing before quoting costs.
 
 ### FLUX Kontext (asynchronous)
 

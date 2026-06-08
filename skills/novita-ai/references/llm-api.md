@@ -20,7 +20,7 @@ OpenAI-compatible API. Base: `https://api.novita.ai/openai/v1`
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `model` | string | Model name (e.g., `moonshotai/kimi-k2.5`) |
+| `model` | string | Model name selected by the user or application |
 | `messages` | array | Array of `{role, content}` objects |
 | `max_tokens` | integer | Maximum tokens to generate |
 
@@ -88,11 +88,11 @@ OpenAI-compatible API. Base: `https://api.novita.ai/openai/v1`
 
 Also supports `"type": "json_object"` for freeform JSON.
 
-### Reasoning Models
+### Reasoning Output
 
-For DeepSeek-R1 and similar:
+For models that expose reasoning content:
 - `separate_reasoning: true` — returns reasoning in `choices[].message.reasoning_content`
-- `enable_thinking: true/false` — toggle thinking mode (GLM-4.5, DeepSeek-V3.1)
+- `enable_thinking: true/false` — toggle thinking mode where supported
 
 ### Multimodal (Vision)
 
@@ -112,7 +112,7 @@ All media references in multimodal messages should come from trusted local sourc
   "id": "chatcmpl-xxx",
   "object": "chat.completion",
   "created": 1234567890,
-  "model": "moonshotai/kimi-k2.5",
+  "model": "<MODEL_NAME>",
   "choices": [{
     "index": 0,
     "finish_reason": "stop",

@@ -12,7 +12,7 @@ Last verified: 2026-02-09
 ### Cursor
 1. Open **Settings** -> **Models**
 2. Uncheck default models
-3. Add model: `deepseek/deepseek-r1`
+3. Add the model selected by the user or application: `<MODEL_NAME>`
 4. Set **OpenAI Base URL**: `https://api.novita.ai/openai`
 5. Enter your **Novita API Key**
 6. Click **Verify**
@@ -24,9 +24,9 @@ Edit `~/.continue/config.json`:
 {
   "models": [
     {
-      "title": "Novita DeepSeek",
+      "title": "Novita",
       "provider": "openai",
-      "model": "deepseek/deepseek-r1",
+      "model": "<MODEL_NAME>",
       "apiBase": "https://api.novita.ai/openai",
       "apiKey": "<YOUR_API_KEY>"
     }
@@ -50,7 +50,7 @@ require("codecompanion").setup({
       return require("codecompanion.adapters").extend("openai", {
         url = "https://api.novita.ai/openai/v1/chat/completions",
         env = { api_key = "NOVITA_API_KEY" },
-        schema = { model = { default = "deepseek/deepseek-r1" } },
+        schema = { model = { default = os.getenv("NOVITA_MODEL") or "<MODEL_NAME>" } },
       })
     end,
   },
@@ -69,7 +69,7 @@ require("codecompanion").setup({
 1. Add **ChatOpenAI** component
 2. Set **OpenAI API Base**: `https://api.novita.ai/openai`
 3. Set **OpenAI API Key**: your Novita key
-4. Set **Model Name**: `deepseek/deepseek-r1`
+4. Set **Model Name**: `<MODEL_NAME>`
 
 ### AnythingLLM
 1. Go to **Settings** -> **LLM Preference**
@@ -90,7 +90,7 @@ require("codecompanion").setup({
 2. Add new AI provider: **OpenAI API Compatible**
 3. API Host: `https://api.novita.ai`
 4. API Key: your Novita key
-5. Model: `deepseek/deepseek-r1`
+5. Model: `<MODEL_NAME>`
 
 ### Page Assist
 1. Click extension icon -> **Settings**

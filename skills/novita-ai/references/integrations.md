@@ -8,7 +8,7 @@ Last verified: 2026-02-09
 
 - **Base URL**: `https://api.novita.ai/openai`
 - **API Key**: Get from https://novita.ai/settings/key-management
-- **Model**: Use Novita model names (example: `deepseek/deepseek-r1`)
+- **Model**: Use the model selected by the user or application (`<MODEL_NAME>`)
 
 ## Category Map
 

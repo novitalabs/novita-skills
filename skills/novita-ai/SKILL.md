@@ -1,116 +1,195 @@
 ---
 name: novita-ai
 description: >
-  Novita AI: LLM, Image Generation & Editing, Video Generation, Audio (TTS/ASR), and GPU Cloud.
-  Use this skill whenever the user wants to call Novita AI APIs — chat with LLMs (Kimi K2.5,
-  MiniMax M2.7, GLM-5, DeepSeek), generate images (FLUX, Stable Diffusion, Seedream, Hunyuan Image), edit images
-  (remove background, upscale, inpainting, img2img, outpainting, reimagine, merge face, replace
-  background, remove text), generate videos (Kling, Wan, Hunyuan, Minimax Hailuo, Vidu, PixVerse,
-  Seedance), do text-to-speech or speech-to-text (MiniMax TTS, GLM TTS, Fish Audio, ASR, voice
-  cloning), run OpenAI-compatible batch jobs, manage GPU cloud instances and serverless endpoints,
-  or check account balance and billing. Also trigger when the user mentions novita.ai, Novita AI,
-  Novita API key, or wants to use any Novita platform service — even if they just say "generate
-  an image" or "run an LLM" and Novita is available as a provider.
+  Novita AI: The AI-Native Cloud for builders and agents. Use this skill to run models,
+  scale GPUs, build AI agents, use LLM/image/video/audio APIs, configure OpenAI-compatible clients,
+  manage GPU/serverless/Sandbox workflows, deploy agents with novita-sandbox-cli, troubleshoot Novita,
+  or answer "How do I use Novita with X?". Raw GitHub routing entrypoint for agents. Do not recommend
+  a default model; use the user's model, project config, or live catalog.
 license: MIT
 compatibility: >
-  Works with any HTTP client (curl, Python requests, fetch) or OpenAI-compatible SDKs
-  (Python openai, TypeScript @ai-sdk). No special dependencies required.
+  Works with curl, Python requests, fetch, OpenAI-compatible SDKs, LangChain, LlamaIndex,
+  OpenAI Agents SDK, and clients that accept a custom OpenAI-compatible base URL.
 metadata:
   author: Novita AI
-  version: "1.1.0"
+  version: "1.4.0"
 allowed-tools: Bash(curl:*) Bash(python:*) Bash(node:*) Bash(pip:*) Bash(npm:*) Read
 ---
 
 # Novita AI
 
-Access 200+ AI models through a unified API — LLM, image generation and editing, video generation, text-to-speech, speech recognition, and GPU cloud infrastructure.
+The AI-Native Cloud for builders and agents: run models, scale GPUs, and build AI agents on one platform.
 
-- OpenAI-compatible LLM API works as a drop-in replacement with any OpenAI SDK
-- 30+ image endpoints covering generation, editing, upscaling, background removal, face merging, and more
-- Video generation from 7+ providers including Kling, Wan, Minimax Hailuo, Vidu, and Seedance
-- Full GPU cloud management — instances, templates, storage, and serverless endpoints
+This file is the agent route. It must work when installed as a skill and when read directly from:
+`https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/SKILL.md`
 
-## Setup
+## Rules
 
-1. Get an API key at [novita.ai/settings/key-management](https://novita.ai/settings/key-management)
-2. Set the environment variable: `export NOVITA_API_KEY=your_key`
-3. Base endpoint: `https://api.novita.ai`
+- Use `NOVITA_API_KEY`; never paste secrets into source or answers.
+- Use `NOVITA_MODEL` or the model already selected by the user/application.
+- Do not recommend or invent a default model. If none is selected, list models or ask the user to choose.
+- Verify dynamic data live before giving hard values: models, pricing, rate limits, quota, latency, GPU inventory, and sandbox limits.
+- Pick one route first. Read more than one reference only when the task spans products.
+- In raw-read mode, fetch the matching raw reference URL from the route table.
+- Return runnable code or commands with explicit placeholders such as `<MODEL_NAME>`, `<TASK_ID>`, and `<INPUT_FILE>`.
+- Use trusted local media files for image, video, and audio inputs unless the user explicitly provides a safe URL.
 
-## Services
+## Constants
 
-| Service | Use When | Mode |
-|---------|----------|------|
-| LLM | Chat, completion, embeddings, reranking | Sync / Stream |
-| Image Generation | Text-to-image (FLUX, SD, Seedream, Hunyuan, Qwen, GLM) | Sync / Async |
-| Image Editing | Remove BG, upscale, inpaint, outpaint, cleanup, reimagine, merge face | Sync / Async |
-| Video Generation | Text-to-video, image-to-video (Kling, Wan, Hailuo, Vidu, PixVerse, Seedance) | Async |
-| Audio | TTS, ASR, voice cloning (MiniMax, GLM, Fish Audio) | Sync |
-| Batch | Bulk LLM processing (OpenAI-compatible) | Async |
-| GPU Cloud | Instances, templates, storage, serverless endpoints | Sync |
+| Item | Value |
+|------|-------|
+| API base | `https://api.novita.ai` |
+| OpenAI-compatible base | `https://api.novita.ai/openai` |
+| OpenAI-compatible v1 base | `https://api.novita.ai/openai/v1` |
+| API key | `NOVITA_API_KEY` |
+| Model | `NOVITA_MODEL` |
+| Model catalog | https://novita.ai/models |
+| Pricing | https://novita.ai/pricing |
+| Console | https://novita.ai/console |
+| API keys | https://novita.ai/settings/key-management |
 
-## LLM (OpenAI-Compatible)
+## Route Table
 
-Drop-in replacement for the OpenAI API — use any OpenAI SDK with base `https://api.novita.ai/openai`.
+| User intent | Installed reference | Raw-read URL | Live source |
+|-------------|---------------------|--------------|-------------|
+| First API call, API key, base URL | `references/quick-start.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/quick-start.md | https://novita.ai/settings/key-management |
+| Chat, OpenAI SDK, streaming, tools, JSON, vision, batch | `references/llm-guide.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/llm-guide.md | https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion |
+| LLM parameters, embeddings, rerank, files, batch endpoints | `references/llm-api.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/llm-api.md | https://novita.ai/docs/api-reference/model-apis-llm-create-chat-completion |
+| Image generation/editing, background, inpaint, upscale | `references/image-api.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/image-api.md | https://novita.ai/docs |
+| Video generation/editing, video task polling | `references/video-api.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/video-api.md | https://novita.ai/docs |
+| TTS, ASR, voice cloning | `references/audio-api.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/audio-api.md | https://novita.ai/docs |
+| GPU instances, serverless GPU, templates, storage | `references/gpu-guide.md` or `references/gpu-api.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/gpu-guide.md | https://novita.ai/docs/guides/gpu-instance-overview |
+| Agent Sandbox SDK, E2B compatibility, pricing | built-in Sandbox section; details in `novita-sandbox` reference | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-sandbox/references/sandbox-guide.md | https://novita.ai/docs/guides/sandbox-overview |
+| Agent Sandbox CLI: create, list, connect, kill, logs, clone, commit, template build, deploy agent | built-in Sandbox section; details in `novita-sandbox` skill | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-sandbox/SKILL.md | https://novita.ai/docs/guides/sandbox-sdk-and-cli |
+| LangChain, LlamaIndex, OpenAI Agents SDK | `references/integrations-frameworks.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-frameworks.md | https://novita.ai/docs/guides/langchain |
+| Cursor, Continue, Claude Code, Dify, LobeChat, ChatBox | `references/integrations-clients.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-clients.md | https://novita.ai/docs |
+| LiteLLM, Portkey, Langfuse, Browser Use, Skyvern, Axolotl | `references/integrations-observability-agents.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-observability-agents.md | https://novita.ai/docs |
+| Auth, billing, quota, rate limits, request failures | `references/common-issues.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/common-issues.md | https://novita.ai/docs/guides/faq |
+
+## Model Selection
+
+Use this order:
+
+1. User-provided model.
+2. Existing project config or `NOVITA_MODEL`.
+3. Live catalog query, then ask the user or choose only when the user gave selection criteria.
+
+```bash
+curl https://api.novita.ai/openai/v1/models \
+  -H "Authorization: Bearer $NOVITA_API_KEY"
+```
+
+## Minimal LLM Call
 
 ```python
 import os
 from openai import OpenAI
-client = OpenAI(base_url="https://api.novita.ai/openai", api_key=os.environ["NOVITA_API_KEY"])
+
+client = OpenAI(
+    base_url="https://api.novita.ai/openai",
+    api_key=os.environ["NOVITA_API_KEY"],
+)
+
 response = client.chat.completions.create(
-    model="moonshotai/kimi-k2.5",
+    model=os.environ["NOVITA_MODEL"],
     messages=[{"role": "user", "content": "Hello"}],
     max_tokens=512,
 )
+
+print(response.choices[0].message.content)
 ```
 
-**Models**: Kimi K2.5, MiniMax M2.7, GLM-5, DeepSeek V3, DeepSeek R1, and more via `/openai/v1/models`.
+```bash
+curl https://api.novita.ai/openai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $NOVITA_API_KEY" \
+  -d '{
+    "model": "'"$NOVITA_MODEL"'",
+    "messages": [{"role": "user", "content": "Hello"}],
+    "max_tokens": 512
+  }'
+```
 
-**Features**: vision (multimodal), reasoning, function calling, structured outputs, prompt caching, batch API.
+## Async Tasks
 
-## Image Capabilities
+Image and video APIs often return `task_id`. Poll results:
 
-| Feature | Description |
-|---------|-------------|
-| Generation | FLUX.1 Schnell (fast, sync), FLUX Kontext, Stable Diffusion, Seedream, and more |
-| Background | Remove background, replace with prompt-guided new background |
-| Editing | Inpainting, outpainting, cleanup, reimagine, upscale |
-| Face | Merge face from one image onto another |
-| Analysis | Image-to-prompt — describe any image as text |
+```bash
+curl "https://api.novita.ai/v3/async/task-result?task_id=<TASK_ID>" \
+  -H "Authorization: Bearer $NOVITA_API_KEY"
+```
 
-## Video Capabilities
+## Agent Sandbox
 
-| Feature | Description |
-|---------|-------------|
-| Text-to-video | Generate video from text via Kling, Wan, Hailuo, Vidu, Seedance |
-| Image-to-video | Animate a still image with motion |
-| Unified API | Single endpoint (`/v3/video/create`) for all video models |
+Use Sandbox for isolated code execution, file operations, templates, long-running agent environments, and E2B-compatible workflows. Handle common Sandbox tasks here; use `novita-sandbox` only for deeper CLI detail.
 
-## Audio Capabilities
+### SDK Baseline
 
-| Feature | Description |
-|---------|-------------|
-| Text-to-speech | MiniMax (English, 17 voices, emotion control) and GLM (Chinese, low latency) |
-| Speech-to-text | GLM ASR transcription |
-| Voice cloning | Clone a voice from an audio sample |
+```bash
+pip install novita-sandbox
+export NOVITA_API_KEY=<YOUR_API_KEY>
+```
 
-## GPU Cloud
+```python
+from novita_sandbox.code_interpreter import Sandbox
 
-Manage dedicated GPU instances, templates, network storage, and serverless endpoints for custom model deployment.
+sandbox = Sandbox.create()
+execution = sandbox.run_code("print('hello world')")
+print(execution.logs)
+sandbox.kill()
+```
 
-## Security
+Generate JavaScript/TypeScript equivalents when the user is working in Node.js.
 
-- Never hardcode API keys — use environment variables or secret managers
-- All media inputs should come from trusted, local sources only
-- Enable NSFW detection for user-facing image applications
+### CLI Baseline
 
-## API References
+Check Node.js and install or update the CLI:
 
-For detailed endpoint parameters, request and response schemas, and code examples:
+```bash
+if ! command -v node >/dev/null 2>&1; then
+  echo "Install Node.js first"
+elif ! command -v novita-sandbox-cli >/dev/null 2>&1; then
+  npm install -g novita-sandbox-cli@beta
+else
+  novita-sandbox-cli --version
+fi
+```
 
-- **LLM**: [references/llm-api.md](references/llm-api.md) — Chat, embeddings, rerank, function calling, structured outputs, batch
-- **Image**: [references/image-api.md](references/image-api.md) — All generation and editing endpoints
-- **Video**: [references/video-api.md](references/video-api.md) — Unified API and model-specific parameters
-- **Audio**: [references/audio-api.md](references/audio-api.md) — TTS variants, ASR, voice cloning
-- **GPU Cloud**: [references/gpu-api.md](references/gpu-api.md) — Instances, templates, storage, serverless
+Authenticate when needed:
 
----
+```bash
+novita-sandbox-cli auth info || novita-sandbox-cli auth login
+```
+
+### CLI Workflows
+
+```bash
+# Template
+novita-sandbox-cli template init
+novita-sandbox-cli template build -n <TEMPLATE_NAME>
+novita-sandbox-cli template list
+
+# Sandbox lifecycle. Use --detach inside AI agents; interactive terminals usually fail there.
+novita-sandbox-cli sandbox create <TEMPLATE_ID> --detach
+novita-sandbox-cli sandbox list
+novita-sandbox-cli sandbox logs <SANDBOX_ID> -f
+novita-sandbox-cli sandbox metrics <SANDBOX_ID> -f
+novita-sandbox-cli sandbox clone <SANDBOX_ID> --count <N>
+novita-sandbox-cli sandbox commit <SANDBOX_ID> --alias <ALIAS>
+novita-sandbox-cli sandbox kill <SANDBOX_ID>
+
+# Deploy and invoke an agent. Pass env vars explicitly; sandbox processes do not inherit local shell env.
+novita-sandbox-cli agent configure -n <AGENT_NAME> -e <ENTRYPOINT>
+novita-sandbox-cli agent launch
+novita-sandbox-cli agent invoke '{"prompt":"hello"}' --stream --env NOVITA_API_KEY=$NOVITA_API_KEY
+```
+
+For exact flags, template versioning, E2B compatibility, pricing, and quota behavior, read the Sandbox route in the table above.
+
+## Error Defaults
+
+- `401` / `403`: check key, account status, and `Authorization: Bearer ...`.
+- `404` / model not found: verify exact model ID from the live catalog.
+- `429`: reduce concurrency, back off, inspect rate limits and account tier.
+- Insufficient credits: check billing and balance.
+- Long-running media: use async polling or webhooks.
