@@ -24,7 +24,22 @@ After installation, restart your agent runtime if needed.
 | Skill | Description | Install |
 |-------|-------------|---------|
 | **novita-ai** | One Novita skill for models, GPUs, agents, integrations, Sandbox, troubleshooting | `npx skills add novitalabs/novita-skills --skill novita-ai` |
+| novita-design-skill | Public-safe Novita AI brand design guide for Web, PPT, landing pages, UI concepts, marketing graphics, and design reviews. Includes official logo SVG assets and brand-level references. | `npx skills add novitalabs/novita-skills --skill novita-design-skill` |
 | novita-sandbox | Optional deep reference for Agent Sandbox CLI workflows | `--skill novita-sandbox` |
+
+## Novita Design Skill
+
+Use `novita-design-skill` when you need Novita-branded visual work without exposing internal product structure or publishing an internal design system. It covers:
+
+- brand voice and visual direction;
+- official Novita logo SVG assets;
+- public brand colors and typography direction;
+- PPT, landing page, UI concept, diagram, chart, icon, and marketing graphic patterns;
+- public-safe guidance that avoids private routes, sidebar structures, domain JSON, exact component specifications, and internal implementation details.
+
+```bash
+npx skills add novitalabs/novita-skills --skill novita-design-skill
+```
 
 
 ## Contribution Flow
