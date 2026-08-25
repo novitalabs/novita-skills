@@ -63,7 +63,7 @@ This file is the agent route. It must work when installed as a skill and when re
 | Agent Sandbox CLI: create, list, connect, kill, logs, clone, commit, template build, deploy agent | built-in Sandbox section; details in `novita-sandbox` skill | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-sandbox/SKILL.md | https://novita.ai/docs/guides/sandbox-sdk-and-cli |
 | LangChain, LlamaIndex, OpenAI Agents SDK | `references/integrations-frameworks.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-frameworks.md | https://novita.ai/docs/guides/langchain |
 | Cursor, Continue, Claude Code, Dify, LobeChat, ChatBox | `references/integrations-clients.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-clients.md | https://novita.ai/docs |
-| LiteLLM, Portkey, Langfuse, Browser Use, Skyvern, Axolotl | `references/integrations-observability-agents.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-observability-agents.md | https://novita.ai/docs |
+| LiteLLM, Portkey, Langfuse, Arize AX, Browser Use, Skyvern, Axolotl | `references/integrations-observability-agents.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/integrations-observability-agents.md | https://novita.ai/docs |
 | Auth, billing, quota, rate limits, request failures | `references/common-issues.md` | https://raw.githubusercontent.com/novitalabs/novita-skills/main/skills/novita-ai/references/common-issues.md | https://novita.ai/docs/guides/faq |
 
 ## Model Selection

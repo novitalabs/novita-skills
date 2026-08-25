@@ -1,6 +1,6 @@
 # Integrations: Observability, Agents, and Training
 
-Last verified: 2026-02-09
+Last verified: 2026-08-25
 
 ## Table of Contents
 - [Observability and Proxy](#observability-and-proxy)
@@ -48,6 +48,58 @@ from langfuse.openai import openai
 openai.api_base = "https://api.novita.ai/openai"
 openai.api_key = os.environ["NOVITA_API_KEY"]
 ```
+
+### Arize AX (Tracing and Evaluation)
+
+[Arize AX](https://arize.com/docs/ax/integrations/llm-providers/novita-ai/novita-ai-tracing) captures Novita calls made through the OpenAI-compatible API by using the OpenInference OpenAI instrumentor. Use AX when you want a managed workspace for production tracing, monitoring, and evaluation workflows. Use [Arize Phoenix](https://arize.com/phoenix/) when you prefer an open-source or self-hosted observability path.
+
+Install the tracing packages:
+
+```bash
+pip install arize-otel openinference-instrumentation-openai openai
+```
+
+Configure credentials:
+
+```bash
+export ARIZE_SPACE_ID="<YOUR_ARIZE_SPACE_ID>"
+export ARIZE_API_KEY="<YOUR_ARIZE_API_KEY>"
+export ARIZE_PROJECT_NAME="novita-ai"
+export NOVITA_API_KEY="<YOUR_NOVITA_API_KEY>"
+export NOVITA_MODEL="<MODEL_NAME>"
+```
+
+Instrument the OpenAI SDK before creating the Novita client:
+
+```python
+import os
+
+from arize.otel import register
+from openinference.instrumentation.openai import OpenAIInstrumentor
+
+tracer_provider = register(
+    space_id=os.environ["ARIZE_SPACE_ID"],
+    api_key=os.environ["ARIZE_API_KEY"],
+    project_name=os.environ["ARIZE_PROJECT_NAME"],
+)
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.novita.ai/openai",
+    api_key=os.environ["NOVITA_API_KEY"],
+)
+
+response = client.chat.completions.create(
+    model=os.environ["NOVITA_MODEL"],
+    messages=[{"role": "user", "content": "Summarize this trace for review."}],
+)
+
+print(response.choices[0].message.content)
+```
+
+For deeper quality workflows, see Arize's guides to [LLM evaluation](https://arize.com/resources/llm-evaluation/) and [agent evaluation](https://arize.com/guides/ai-agent-handbook/agent-evaluation/).
 
 ### Portkey (Gateway)
 
